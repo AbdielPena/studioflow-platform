@@ -10,6 +10,7 @@ import {
   Receipt,
   Package,
   Truck,
+  ClipboardList,
   type LucideIcon,
 } from "lucide-react";
 
@@ -37,6 +38,8 @@ export const NAV_GROUPS: NavGroup[] = [
     label: "Facturación",
     items: [
       { label: "Facturas", href: "/facturacion", icon: Receipt, permission: "facturacion:invoice:read" },
+      { label: "Cotizaciones", href: "/facturacion/quotes", icon: FileText, permission: "facturacion:quote:read" },
+      { label: "Conduces", href: "/facturacion/deliveries", icon: ClipboardList, permission: "facturacion:delivery:manage" },
       { label: "POS", href: "/facturacion/pos", icon: ShoppingCart, permission: "facturacion:pos:use" },
       { label: "Productos", href: "/facturacion/products", icon: Package, permission: "facturacion:product:manage" },
       { label: "Clientes", href: "/facturacion/customers", icon: Users, permission: "facturacion:customer:manage" },

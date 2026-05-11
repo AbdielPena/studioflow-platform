@@ -15,15 +15,18 @@ export const createInvoiceSchema = z.object({
   branchId: z.string().cuid().nullable().optional(),
   ncfType: z
     .enum(["B01", "B02", "B03", "B04", "B11", "B12", "B13", "B14", "B15", "B16", "B17"])
-    .optional(),
-  paymentMethod: z.enum(["CASH", "CARD", "TRANSFER", "CHECK", "CREDIT", "MIXED", "DIGITAL_WALLET", "OTHER"]).default("CASH"),
+    .optional()
+    .nullable(),
+  paymentMethod: z
+    .enum(["CASH", "CARD", "TRANSFER", "CHECK", "CREDIT", "MIXED", "DIGITAL_WALLET", "OTHER"])
+    .default("CASH"),
   isCredit: z.boolean().default(false),
-  dueDate: z.coerce.date().optional(),
+  dueDate: z.coerce.date().optional().nullable(),
   currency: z.string().length(3).default("DOP"),
   exchangeRate: z.coerce.number().positive().default(1),
   tipAmount: z.coerce.number().nonnegative().default(0),
   items: z.array(invoiceItemInputSchema).min(1, "Al menos un ítem"),
-  notes: z.string().max(2000).optional(),
+  notes: z.string().max(2000).optional().nullable(),
 });
 
 export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
@@ -32,3 +35,15 @@ export const voidInvoiceSchema = z.object({
   invoiceId: z.string().cuid(),
   reason: z.string().min(5, "Razón requerida"),
 });
+
+export const addPaymentSchema = z.object({
+  invoiceId: z.string().cuid(),
+  amount: z.coerce.number().positive(),
+  method: z.enum(["CASH", "CARD", "TRANSFER", "CHECK", "DIGITAL_WALLET", "OTHER"]),
+  reference: z.string().max(120).optional().nullable(),
+  bankAccountId: z.string().cuid().optional().nullable(),
+  receivedAt: z.coerce.date().default(() => new Date()),
+  notes: z.string().max(500).optional().nullable(),
+});
+
+export type AddPaymentInput = z.infer<typeof addPaymentSchema>;
