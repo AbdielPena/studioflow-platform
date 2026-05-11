@@ -8,6 +8,8 @@ import {
   Settings,
   ShoppingCart,
   Receipt,
+  Package,
+  Truck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -32,15 +34,23 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: "Operaciones",
+    label: "Facturación",
     items: [
-      { label: "Facturación", href: "/facturacion", icon: Receipt, permission: "facturacion:invoice:read" },
+      { label: "Facturas", href: "/facturacion", icon: Receipt, permission: "facturacion:invoice:read" },
       { label: "POS", href: "/facturacion/pos", icon: ShoppingCart, permission: "facturacion:pos:use" },
-      { label: "Inventario externo", href: "/inventario-link", icon: Boxes, permission: "inventario-link:logs:view" },
+      { label: "Productos", href: "/facturacion/products", icon: Package, permission: "facturacion:product:manage" },
+      { label: "Clientes", href: "/facturacion/customers", icon: Users, permission: "facturacion:customer:manage" },
+      { label: "Suplidores", href: "/facturacion/suppliers", icon: Truck, permission: "facturacion:supplier:manage" },
     ],
   },
   {
-    label: "Clientes",
+    label: "Inventario",
+    items: [
+      { label: "Conexión externa", href: "/inventario-link", icon: Boxes, permission: "inventario-link:logs:view" },
+    ],
+  },
+  {
+    label: "Clientes (CRM)",
     items: [
       { label: "CRM", href: "/crm", icon: Users, permission: "crm:lead:manage" },
       { label: "Galerías", href: "/gallery", icon: Camera, permission: "gallery:gallery:create" },
