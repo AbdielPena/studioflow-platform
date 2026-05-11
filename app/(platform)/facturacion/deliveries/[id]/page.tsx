@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { requireCompany } from "@/packages/auth/session";
 import { PageHeader } from "@/components/shared/page-header";
+import { PrintButton } from "@/components/shared/print-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -38,6 +39,7 @@ export default async function DeliveryPage({ params }: { params: { id: string } 
           { label: "Conduces", href: "/facturacion/deliveries" },
           { label: delivery.number },
         ]}
+        actions={<PrintButton href={`/print/delivery/${delivery.id}`} />}
       />
       <div className="mx-auto max-w-5xl space-y-6 p-6 lg:p-8">
         <Card>

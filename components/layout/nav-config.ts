@@ -15,6 +15,7 @@ import {
   CreditCard,
   Banknote,
   Building,
+  FolderKanban,
   type LucideIcon,
 } from "lucide-react";
 
@@ -60,7 +61,9 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Clientes (CRM)",
     items: [
-      { label: "CRM", href: "/crm", icon: Users, permission: "crm:lead:manage" },
+      { label: "Resumen CRM", href: "/crm", icon: Users, permission: "crm:lead:manage" },
+      { label: "Leads", href: "/crm/leads", icon: Users, permission: "crm:lead:manage" },
+      { label: "Proyectos", href: "/crm/projects", icon: FolderKanban, permission: "crm:project:manage" },
       { label: "Galerías", href: "/gallery", icon: Camera, permission: "gallery:gallery:create" },
     ],
   },

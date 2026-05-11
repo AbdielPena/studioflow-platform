@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireCompany } from "@/packages/auth/session";
 import { PageHeader } from "@/components/shared/page-header";
+import { PrintButton } from "@/components/shared/print-button";
 import { QuoteDetail } from "@/modules/facturacion/components/quote-detail";
 import { getQuoteService } from "@/modules/facturacion/services/quote.service";
 import { isAppError } from "@/packages/lib/errors";
@@ -27,6 +28,7 @@ export default async function QuotePage({ params }: { params: { id: string } }) 
           { label: "Cotizaciones", href: "/facturacion/quotes" },
           { label: quote.number },
         ]}
+        actions={<PrintButton href={`/print/quote/${quote.id}`} />}
       />
       <div className="mx-auto max-w-5xl p-6 lg:p-8">
         <QuoteDetail quote={quote} />
