@@ -11,6 +11,10 @@ import {
   Package,
   Truck,
   ClipboardList,
+  ShoppingBag,
+  CreditCard,
+  Banknote,
+  Building,
   type LucideIcon,
 } from "lucide-react";
 
@@ -44,6 +48,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "Productos", href: "/facturacion/products", icon: Package, permission: "facturacion:product:manage" },
       { label: "Clientes", href: "/facturacion/customers", icon: Users, permission: "facturacion:customer:manage" },
       { label: "Suplidores", href: "/facturacion/suppliers", icon: Truck, permission: "facturacion:supplier:manage" },
+      { label: "Compras", href: "/facturacion/purchases", icon: ShoppingBag, permission: "facturacion:purchase:read" },
     ],
   },
   {
@@ -62,7 +67,11 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: "Finanzas",
     items: [
-      { label: "Finanzas", href: "/finanzas", icon: Wallet, permission: "finanzas:report:view" },
+      { label: "Resumen", href: "/finanzas", icon: Wallet, permission: "finanzas:report:view" },
+      { label: "CxC", href: "/finanzas/receivables", icon: CreditCard, permission: "finanzas:receivable:manage" },
+      { label: "CxP", href: "/finanzas/payables", icon: CreditCard, permission: "finanzas:payable:manage" },
+      { label: "Bancos", href: "/finanzas/banks", icon: Building, permission: "finanzas:bank:manage" },
+      { label: "Caja", href: "/finanzas/cash", icon: Banknote, permission: "finanzas:cash:open" },
       { label: "Reportes", href: "/finanzas/reportes", icon: FileText, permission: "reports:sales:view" },
     ],
   },
