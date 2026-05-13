@@ -22,6 +22,28 @@ export type PlatformEvent =
   // CRM
   | { type: "lead.created"; payload: { leadId: string; companyId: string } }
   | { type: "project.completed"; payload: { projectId: string; companyId: string } }
+  // Customers
+  | {
+      type: "customer.created";
+      payload: {
+        customerId: string;
+        companyId: string;
+        legalName?: string;
+        email?: string | null;
+        phone?: string | null;
+        documentNumber?: string | null;
+      };
+    }
+  | {
+      type: "customer.updated";
+      payload: {
+        customerId: string;
+        companyId: string;
+        legalName?: string;
+        email?: string | null;
+        phone?: string | null;
+      };
+    }
   // Gallery
   | { type: "gallery.published"; payload: { galleryId: string; companyId: string } };
 

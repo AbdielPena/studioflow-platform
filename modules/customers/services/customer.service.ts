@@ -2,6 +2,7 @@ import { AuditAction } from "@prisma/client";
 import { AppError } from "@/lib/errors";
 import { audit } from "@/lib/audit";
 import { isValidDocumentNumber } from "@/lib/fiscal";
+import { publish } from "@/packages/events";
 import * as repo from "../repositories/customer.repository";
 import type { CustomerFormInput, CustomerListFilters } from "../schemas/customer.schema";
 
@@ -45,6 +46,15 @@ export async function createCustomerService(opts: {
     entityId: customer.id,
     after: { legalName: customer.legalName, documentNumber: customer.documentNumber },
   });
+  // Studio Business Hub — emit federado via bus interno (hub-dispatcher reenvía)
+  void publish("customer.created", {
+    customerId: customer.id,
+    companyId: opts.companyId,
+    legalName: customer.legalName ?? undefined,
+    email: customer.email ?? null,
+    phone: customer.phone ?? null,
+    documentNumber: customer.documentNumber ?? null,
+  });
   return customer;
 }
 
@@ -81,6 +91,13 @@ export async function updateCustomerService(opts: {
     entityId: opts.id,
     before: { legalName: before.legalName },
     after: { legalName: after.legalName },
+  });
+  void publish("customer.updated", {
+    customerId: opts.id,
+    companyId: opts.companyId,
+    legalName: after.legalName ?? undefined,
+    email: after.email ?? null,
+    phone: after.phone ?? null,
   });
   return after;
 }

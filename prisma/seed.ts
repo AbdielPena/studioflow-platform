@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import "dotenv/config";
 import { PrismaClient, SystemRole, NcfType, NcfStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { PERMISSION_CATALOG, SYSTEM_ROLES } from "../packages/lib/permissions";
