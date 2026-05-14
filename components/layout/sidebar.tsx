@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { cn } from "@/packages/lib/utils";
 import { NAV_GROUPS } from "./nav-config";
+import { AppSwitcher } from "@/components/app-switcher";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Props = {
@@ -37,26 +38,17 @@ export function Sidebar({ permissions, isOwner, systemRole }: Props) {
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
         className="sticky top-0 z-30 hidden h-screen shrink-0 border-r bg-card/50 backdrop-blur lg:flex lg:flex-col"
       >
-        <div className="flex h-16 items-center gap-3 border-b px-4">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-            <span className="text-xs font-bold">SF</span>
+        {/* AppSwitcher: header compartido del Studio Suite. Reemplaza el brand
+            "SF · Platform" custom. currentSystem="billing" destaca facturación. */}
+        <div
+          className={cn(
+            "flex h-16 items-center border-b",
+            collapsed ? "justify-center px-2" : "px-3",
+          )}
+        >
+          <div className="w-full">
+            <AppSwitcher currentSystem="billing" collapsed={collapsed} />
           </div>
-          <AnimatePresence initial={false}>
-            {!collapsed && (
-              <motion.div
-                key="brand"
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -8 }}
-                className="flex flex-col overflow-hidden"
-              >
-                <span className="truncate text-sm font-semibold">StudioFlow</span>
-                <span className="truncate text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Platform
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         <nav className="flex-1 space-y-6 overflow-y-auto scrollbar-thin p-3">
