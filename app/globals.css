@@ -1,3 +1,9 @@
+/* Studio Suite — tokens compartidos cross-system (--studio-* vars).
+ * Cargado ANTES de Tailwind para que sus utilidades puedan
+ * referenciar las CSS vars del Suite sin sobreescribir los tokens
+ * propios de facturación. */
+@import "./tokens-shared.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
