@@ -1,0 +1,84 @@
+name: Deploy to VPS (Facturación)
+
+# SSH directo como `facturacion`. Secrets requeridos:
+#   SSH_HOST, SSH_USER=facturacion, SSH_PRIVATE_KEY, SSH_PORT (opt)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'packages/**'
+      - 'modules/**'
+      - 'lib/**'
+      - 'public/**'
+      - 'prisma/**'
+      - 'types/**'
+      - 'middleware.ts'
+      - 'next.config.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy-vps.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: vps-deploy-facturacion
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: SSH deploy → facturacion@abbypixel-vps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate secrets
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          missing=""
+          [ -z "$SSH_HOST" ] && missing="$missing SSH_HOST"
+          [ -z "$SSH_USER" ] && missing="$missing SSH_USER"
+          [ -z "$SSH_KEY" ]  && missing="$missing SSH_PRIVATE_KEY"
+          [ -n "$missing" ] && { echo "::error::Faltan secrets:$missing"; exit 1; }
+
+      - name: Setup SSH key
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "$SSH_PORT" -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Deploy via SSH
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT || '22' }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" -o StrictHostKeyChecking=no \
+            "$SSH_USER@$SSH_HOST" "BRANCH=$BRANCH bash -lse" <<'REMOTE'
+            set -e
+            cd ~/htdocs/facturacion.abbypixel.com
+            export NVM_DIR=$HOME/.nvm
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" || true
+            git fetch origin "$BRANCH" && git reset --hard "origin/$BRANCH"
+            npm ci --no-audit --no-fund --silent
+            npx --no-install prisma generate 2>/dev/null || true
+            npm run build
+            pm2 restart facturacion --update-env
+            pm2 status facturacion
+          REMOTE
+
+      - name: Health check
+        run: |
+          sleep 6
+          code=$(curl -s -o /dev/null -w "%{http_code}" https://facturacion.abbypixel.com/api/healthz)
+          echo "Health: $code"
+          [ "$code" = "200" ] || echo "::warning::Health non-200 ($code)"
