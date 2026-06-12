@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { LoginForm } from "@/modules/_shared/auth/login-form";
 
 export const metadata: Metadata = { title: "Iniciar sesión" };
@@ -20,9 +19,12 @@ export default function LoginPage() {
 
       <p className="mt-6 text-sm text-muted-foreground">
         ¿Aún no tienes cuenta?{" "}
-        <Link href="/register" className="font-medium text-foreground hover:underline">
+        <a
+          href="https://hub.abbypixel.com/login?mode=signup"
+          className="font-medium text-foreground hover:underline"
+        >
           Crear empresa
-        </Link>
+        </a>
       </p>
     </div>
   );
