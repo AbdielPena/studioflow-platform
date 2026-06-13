@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronsLeft, ChevronsRight } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, X } from "lucide-react";
 import { cn } from "@/packages/lib/utils";
 import { NAV_GROUPS } from "./nav-config";
 import { AppSwitcher } from "@/components/app-switcher";
+import { useSidebarMobile } from "./sidebar-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Props = {
@@ -19,6 +20,12 @@ type Props = {
 export function Sidebar({ permissions, isOwner, systemRole }: Props) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const { open: mobileOpen, setOpen: setMobileOpen } = useSidebarMobile();
+
+  // Cerrar el drawer al navegar.
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname, setMobileOpen]);
 
   const filteredGroups = useMemo(() => {
     if (systemRole === "SUPERADMIN" || isOwner) return NAV_GROUPS;
@@ -32,23 +39,46 @@ export function Sidebar({ permissions, isOwner, systemRole }: Props) {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <motion.aside
-        initial={false}
-        animate={{ width: collapsed ? 72 : 260 }}
-        transition={{ type: "spring", stiffness: 260, damping: 28 }}
-        className="sticky top-0 z-30 hidden h-screen shrink-0 border-r bg-card/50 backdrop-blur lg:flex lg:flex-col"
+      {/* Overlay — solo móvil cuando el drawer está abierto. */}
+      {mobileOpen && (
+        <button
+          type="button"
+          aria-label="Cerrar menú"
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        />
+      )}
+
+      <aside
+        className={cn(
+          "z-50 flex h-screen shrink-0 flex-col border-r bg-card/50 backdrop-blur",
+          // Ancho por CSS (no framer, que pisaría el transform del drawer).
+          "w-[260px]",
+          collapsed ? "lg:w-[72px]" : "lg:w-[260px]",
+          // Móvil: drawer off-canvas. Desktop: parte del flujo.
+          "fixed inset-y-0 left-0 transition-[width,transform] duration-300 ease-in-out",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          "lg:sticky lg:top-0 lg:translate-x-0",
+        )}
       >
-        {/* AppSwitcher: header compartido del Studio Suite. Reemplaza el brand
-            "SF · Platform" custom. currentSystem="billing" destaca facturación. */}
+        {/* AppSwitcher: header compartido del Studio Suite. */}
         <div
           className={cn(
-            "flex h-16 items-center border-b",
+            "flex h-16 items-center gap-2 border-b",
             collapsed ? "justify-center px-2" : "px-3",
           )}
         >
-          <div className="w-full">
+          <div className="min-w-0 flex-1">
             <AppSwitcher currentSystem="billing" collapsed={collapsed} />
           </div>
+          <button
+            type="button"
+            onClick={() => setMobileOpen(false)}
+            aria-label="Cerrar menú"
+            className="inline-flex size-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-accent hover:text-foreground lg:hidden"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         <nav className="flex-1 space-y-6 overflow-y-auto scrollbar-thin p-3">
@@ -121,7 +151,7 @@ export function Sidebar({ permissions, isOwner, systemRole }: Props) {
           ))}
         </nav>
 
-        <div className="border-t p-3">
+        <div className="hidden border-t p-3 lg:block">
           <button
             onClick={() => setCollapsed((c) => !c)}
             className="flex w-full items-center justify-center gap-2 rounded-xl border bg-background px-3 py-2 text-xs text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -136,7 +166,7 @@ export function Sidebar({ permissions, isOwner, systemRole }: Props) {
             )}
           </button>
         </div>
-      </motion.aside>
+      </aside>
     </TooltipProvider>
   );
 }
