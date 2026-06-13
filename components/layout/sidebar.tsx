@@ -56,7 +56,9 @@ export function Sidebar({ permissions, isOwner, systemRole }: Props) {
           "w-[260px]",
           collapsed ? "lg:w-[72px]" : "lg:w-[260px]",
           // Móvil: drawer off-canvas. Desktop: parte del flujo.
-          "fixed inset-y-0 left-0 transition-[width,transform] duration-300 ease-in-out",
+          // NO transicionar `transform` (Tailwind translate usa var(--tw-translate-x)
+          // y Chromium no interpola transforms basados en variable → panel pegado).
+          "fixed inset-y-0 left-0 transition-[width] duration-300 ease-in-out",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
           "lg:sticky lg:top-0 lg:translate-x-0",
         )}
