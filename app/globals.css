@@ -8,6 +8,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Logo de marca (wordmark Abby Pixel) vía mask — adapta el color al tema.
+   CSS plano (fuera de @layer) para que Tailwind NO lo purgue. */
+.brand-logo {
+  display: inline-block;
+  height: 28px;
+  width: 130px;
+  background-color: currentColor;
+  -webkit-mask: url("/brand/abbypixel-logo.png") left center / contain no-repeat;
+  mask: url("/brand/abbypixel-logo.png") left center / contain no-repeat;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
