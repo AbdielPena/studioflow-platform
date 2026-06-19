@@ -38,13 +38,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Izquierda: marca + valor del módulo */}
       <aside className="relative hidden flex-col justify-center border-r bg-muted/20 px-12 py-16 lg:flex xl:px-16">
         <div className="mb-12 inline-flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-foreground text-[15px] font-semibold text-background">
-            P
-          </span>
-          <span className="text-lg font-semibold tracking-tight text-foreground">
-            PixelOS
-          </span>
-          <span className="ml-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+          <span
+            className="brand-logo text-foreground"
+            role="img"
+            aria-label="Abby Pixel"
+            style={{ height: 28, width: 132 }}
+          />
+          <span className="rounded-full border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
             Facturación
           </span>
         </div>
@@ -74,13 +74,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <section className="flex min-h-dvh flex-col">
         <div className="flex items-center justify-center px-6 pb-2 pt-8 lg:hidden">
           <div className="inline-flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-foreground text-[15px] font-semibold text-background">
-              P
-            </span>
-            <span className="text-lg font-semibold tracking-tight text-foreground">
-              PixelOS
-            </span>
-            <span className="ml-1 rounded-full border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+            <span
+              className="brand-logo text-foreground"
+              role="img"
+              aria-label="Abby Pixel"
+              style={{ height: 24, width: 112 }}
+            />
+            <span className="rounded-full border px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
               Facturación
             </span>
           </div>
